@@ -9,7 +9,35 @@ const CopyWebpackPlugin = require('copy-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin')
 const portfinder = require('portfinder')
+// 配置node中的express路由，请求数据
+// const express=require('express');
+// const app = express();
 
+// var appData = require('../data.json');
+// var seller = appData.seller;
+// var  goods = appData.goods;
+// var ratings = appData.ratings;
+
+// var apiRouter = express.Router();
+// apiRouter.get('/seller',function (req, res){
+//   res.json({
+//     errno: 0,
+//     data: seller
+//   })
+// });
+// apiRouter.get('/goods',function (req, res){
+//   res.json({
+//     errno: 0,
+//     data: goods
+//   })
+// });
+// apiRouter.get('/ratings',function (req, res){
+//   res.json({
+//     errno: 0,
+//     data: ratings
+//   })
+// })
+// app.use('/api', apiRouter);
 const HOST = process.env.HOST
 const PORT = process.env.PORT && Number(process.env.PORT)
 
