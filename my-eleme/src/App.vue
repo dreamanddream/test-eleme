@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <!-- <img src="./assets/logo.png"> -->
-    <!-- <v-header></v-header> -->
+    <v-header :seller="seller"></v-header>
     <div class="tab border-1px">
       <div class="tab-item">
         <router-link v-bind:to="'/goods'">
@@ -23,7 +23,7 @@
   </div>
 </template>
 <script type="text/ecmascript-6">
-import header from './components/header/header.vue'
+import Vheader from './components/header/header.vue'
 // 定义全局常量，项目中如果多次使用，方便同意修改，这是一种思路
 const ERR_OK = 0
 // 通过export default导出一个对象
@@ -49,7 +49,7 @@ export default {
     })
   },
   components: {
-    'v-header': header
+    'v-header': Vheader
   }
 }
 </script>
