@@ -21,7 +21,13 @@ module.exports = {
     errorOverlay: true,
     notifyOnErrors: true,
     poll: false, // https://webpack.js.org/configuration/dev-server/#devserver-watchoptions-
-
+    // 添加代理
+    // proxyTable:{
+    //   '/api/':'http://localhost:3000/'
+    // },
+    // proxyTable:{
+    //   '/api/':'http://192.168.199.168:3000/'
+    // },
     // Use Eslint Loader?
     // If true, your code will be linted during bundling and
     // linting errors and warnings will be shown in the console.

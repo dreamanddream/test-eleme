@@ -40,6 +40,18 @@ const portfinder = require('portfinder')
 // app.use('/api', apiRouter);
 const HOST = process.env.HOST
 const PORT = process.env.PORT && Number(process.env.PORT)
+// 配置数据
+const express = require('express');
+const app = express();
+const  appData = require('../data.json');
+const  seller_data = appData.seller;
+const  goods_data = appData.goods;
+const ratings_data = appData.ratings;
+var apiRoutes = express.Router();
+app.use('/api', apiRoutes);
+
+
+
 
 const devWebpackConfig = merge(baseWebpackConfig, {
   module: {
@@ -50,6 +62,28 @@ const devWebpackConfig = merge(baseWebpackConfig, {
 
   // these devServer options should be customized in /config/index.js
   devServer: {
+    // 进行配置express
+    before(app) {
+      app.get('/api/seller', function(req, res) {
+        res.json({
+          errno: 0,
+          data: seller_data
+        })
+      });
+      app.get('/api/goods', function(req, res) {
+        res.json({
+          errno: 0,
+          data: goods_data
+        })
+      });
+      app.get('/api/ratings', function(req, res) {
+        res.json({
+          errno: 0,
+          data: ratings_data
+        })
+      });
+    },
+    // 以上express配置结束
     clientLogLevel: 'warning',
     historyApiFallback: {
       rewrites: [
@@ -96,6 +130,8 @@ const devWebpackConfig = merge(baseWebpackConfig, {
     ])
   ]
 })
+
+
 
 module.exports = new Promise((resolve, reject) => {
   portfinder.basePort = process.env.PORT || config.dev.port
