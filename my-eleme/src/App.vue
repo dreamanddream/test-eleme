@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <!-- <img src="./assets/logo.png"> -->
-    <!-- <v-header></v-header> -->
+    <v-header :seller="seller"></v-header>
     <div class="tab border-1px">
       <div class="tab-item">
         <router-link v-bind:to="'/goods'">
@@ -43,6 +43,7 @@ export default {
       // console.log(res.json)
       res = res.body
       if (res.errno === ERR_OK) {
+        // 将获取到的seller传递给header，通过v-bind
         this.seller = res.data
         console.log(this.seller)
       }
