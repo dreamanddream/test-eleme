@@ -44,7 +44,7 @@
 </template>
 <script>
 import BScroll from 'better-scroll'
-import data from '../../common/json/data.json';
+// import data from '../../common/json/data.json';
 const ERR_OK = 0
 export default {
   props: {
@@ -81,21 +81,21 @@ export default {
       res = res.body
       if (res.errno === ERR_OK) {
         this.goods = res.data
-        console.log(this.goods)
+        this.$nextTick(() => {
+          this._initScroll()
+          this._calculateHeight()
+        })
       }
     })
     // this.goods = data.goods
-    // this.$nextTick(() => {
-    //   this._initScroll()
-      
-    // })
   },
-  mounted () {
-    this.$nextTick(() => {
-      this._initScroll()
-      this._calculateHeight()
-    })
-  },
+  // mounted () {
+
+  //   this.$nextTick(() => {
+  //     this._initScroll()
+  //     this._calculateHeight()
+  //   })
+  // },
   methods: {
     // 初始化滚动
     _initScroll () {
