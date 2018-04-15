@@ -45,7 +45,7 @@ export default {
       if (res.errno === ERR_OK) {
         // 将获取到的seller传递给header，通过v-bind
         this.seller = res.data
-        console.log(this.seller)
+        // console.log(this.seller)
       }
     })
   },

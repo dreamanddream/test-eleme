@@ -8,6 +8,10 @@ border-1px($color)
     border-top: 1px solid $color
     width:100%
     content:''
+// 处理列表项中最后一个没有下边框,设置一个取消边框的混合模式
+border-none()
+  &:after
+    display: none
 bg-image($url)
   background-image url($url+"@2x.png")
   @media (-webkit-min-device-pixel-ratio: 3),(min-device-pixel-ratio)
