@@ -207,7 +207,7 @@ export default{
       left 0
       top 0px
       background rgba(7, 17, 27, 0.6)
-      .detail-wrapper
+      .detail-wrapperip
         width:100%
         min-height 100%
         .detail-main
