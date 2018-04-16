@@ -250,11 +250,9 @@ export default{
       top 0px
       overflow auto
       background rgba(7, 17, 27, 0.6)
-<<<<<<< HEAD
-      .detail-wrapperip
-=======
-      // 这个backdrop背景模糊之后苹果手机支持
-      -webkit-backdrop-filter blur(10px)
+      .detail-wrapper
+        // 这个backdrop背景模糊之后苹果手机支持
+        -webkit-backdrop-filter blur(10px)
       &.fade-enter-active
         animation bounce-in 0.5s
       &.fade-leave-active
@@ -282,7 +280,6 @@ export default{
         }
       }
       .detail-wrapper
->>>>>>> 975feefe4539a9618d06d005564dc25ffb7a53e3
         width:100%
         min-height 100%
         .detail-main
@@ -343,8 +340,9 @@ export default{
                 color #ffffff
           .bulletin
             width 80%
-            height 200px
-            margin 22px auto
+            // height 200px
+            // margin 22px auto
+            margin 0 auto
             .content
               padding 0 12px
               line-height 24px

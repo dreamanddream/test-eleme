@@ -87,7 +87,10 @@ export default {
         })
       }
     })
-    // this.goods = data.goods
+    // this.$nextTick(() => {
+    //     this._initScroll()
+    //     this._calculateHeight()
+    // })
   },
   // mounted () {
 
@@ -110,7 +113,7 @@ export default {
       })
       // 同时给右侧添加滚动
       this.foodScroll.on('scroll', (pos) => {
-        // pos.y获取滚动的纵坐标
+        // pos.y获取滚动的纵坐标,实时获取
         this.scrolly = Math.abs(Math.round(pos.y))
       })
     },
@@ -123,10 +126,10 @@ export default {
       console.log(foodList.length)
       for (let i = 0; i < foodList.length; i++) {
         let item = foodList[i]
-        console.log(item)
+        // console.log(item)
         // 原生js获取clientHeight
         height += item.clientHeight
-        console.log(2222)
+        console.log(item.clientHeight)
         this.listHeight.push(height)
         // console.log("px")
         console.log(this.listHeight)
