@@ -36,21 +36,56 @@
       <img :src="seller.avatar" alt="">
     </div>
     <!-- 弹层 -->
-    <div class="detail" v-show="detailShow">
-      <!-- sticky footer的处理 -->
-      <div class="detail-wrapper clearfix">
-        <div class="detail-main">
-          <div class="name">{{ seller.name }}</div>
+    <transition name="fade">
+      <div class="detail" v-show="detailShow">
+        <!-- sticky footer的处理 -->
+        <div class="detail-wrapper clearfix">
+          <div class="detail-main">
+            <h1 class="name">{{ seller.name }}</h1>
+            <!-- 使用注册的star ,动态绑定score和size传递给子组件-->
+            <!-- 不要将非组件中的边距写到组件中，这样不够灵活，可以在使用组件时添加外层div调整边距 -->
+            <div class="star-wrapper">
+              <!-- 通过改变size的值，从而使用不同的类，渲染不同的图片大小 -->
+              <star :score="seller.score" :size="48"></star>
+            </div>
+            <!-- flex布局设置标题和线条 -->
+            <div class="title">
+              <div class="line"></div>
+              <div class="text">优惠信息</div>
+              <div class="line"></div>
+            </div>
+            <!-- 列表渲染5种类型，注意不要忘了v-if -->
+            <div class="supports" v-if="seller.supports">
+              <!-- 巧妙的利用index -->
+              <li class="support-item" v-for="(item, index) in seller.supports" :key="index">
+                <!-- 结合classMap -->
+                <span class="icon" :class="classMap[seller.supports[index].type]"></span>
+                <span class="text">{{seller.supports[index].description}}</span>
+              </li>
+            </div>
+            <!-- 商家公告 -->
+            <div class="title">
+              <div class="line"></div>
+              <div class="text">商家公告</div>
+              <div class="line"></div>
+            </div>
+            <!-- 公告详情描述 -->
+            <div class="bulletin">
+              <p class="content">{{seller.bulletin}}</p>
+              <!-- <p class="content">{{seller.bulletin}}</p> -->
+            </div>
+          </div>
+        </div>
+        <div class="detail-close" @click="hideDetail">
+          <!-- 使用图标字体 -->
+          <i class="icon-close"></i>
         </div>
       </div>
-      <div class="detail-close">
-        <!-- 使用图标字体 -->
-        <i class="icon-close"></i>
-      </div>
-    </div>
+    </transition>
   </div>
 </template>
 <script>
+import star from '../star/star'
 export default{
   props: {
     seller: {
@@ -68,9 +103,16 @@ export default{
     // 创建classMap，对应不同的类
     this.classMap = ['decrease', 'discount', 'guarantee', 'invoice', 'special']
   },
+  // 注册组件
+  components: {
+    star
+  },
   methods: {
     showDetail () {
       this.detailShow = true
+    },
+    hideDetail () {
+      this.detailShow = false
     }
   }
 }
@@ -86,7 +128,7 @@ export default{
     .content-wrapper
       position relative
       padding: 24px 12px 18px 24px
-      /*消除空格,设置父级font-size为0，主要是图片有间隙 */
+      /* 消除空格,设置父级font-size为0，主要是图片有间隙 */
       font-size:0
       .avatar
         display:inline-block
@@ -206,8 +248,41 @@ export default{
       height 100%
       left 0
       top 0px
+      overflow auto
       background rgba(7, 17, 27, 0.6)
+<<<<<<< HEAD
       .detail-wrapperip
+=======
+      // 这个backdrop背景模糊之后苹果手机支持
+      -webkit-backdrop-filter blur(10px)
+      &.fade-enter-active
+        animation bounce-in 0.5s
+      &.fade-leave-active
+        animation bounce-out 0.5s
+      @keyframes bounce-in {
+        0% {
+          transform: scale(0);
+        }
+        50% {
+          transform: scale(1.5);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+      @keyframes bounce-out {
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.5);
+        }
+        100% {
+          transform: scale(0);
+        }
+      }
+      .detail-wrapper
+>>>>>>> 975feefe4539a9618d06d005564dc25ffb7a53e3
         width:100%
         min-height 100%
         .detail-main
@@ -219,6 +294,61 @@ export default{
             text-align center
             font-size 16px
             font-weight 7000
+          .star-wrapper
+            margin-top 18px
+            padding 2px 0
+            text-align center
+          // 自适应flex布局
+          .title
+            // vue会自动使用postcss根据can i use官网的兼容性自动添加前缀，在谷歌浏览器中检查代码可以看下
+            display flex
+            width:80%
+            margin 20px auto 24px auto
+            .line
+              flex 1
+              position relative
+              top -6px
+              border-bottom:1px solid rgba(255, 255, 255,  0.2)
+          .supports
+            width 80%
+            margin 0 auto
+            .support-item
+              padding 0 12px
+              margin-bottom 12px
+              font-size 0
+              &:last-child
+                margin-bottom 0
+              .icon
+                display inline-block
+                width 16px
+                height 16px
+                vertical-align top
+                margin-right 6px
+                background-size 16px 16px
+                background-repeat no-repeat
+                // 这里设置图片大小是16px，使用的是另一个切图的尺寸
+                &.decrease
+                  bg-image('decrease_2')
+                &.discount
+                  bg-image('discount_2')
+                &.guarantee
+                  bg-image('guarantee_2')
+                &.invoice
+                  bg-image('invoice_2')
+                &.special
+                  bg-image('special_2')
+              .text
+                line-height 12px
+                font-size 12px
+                color #ffffff
+          .bulletin
+            width 80%
+            height 200px
+            margin 22px auto
+            .content
+              padding 0 12px
+              line-height 24px
+              font-size 12px
       .detail-close
           position relative
           width 32px
