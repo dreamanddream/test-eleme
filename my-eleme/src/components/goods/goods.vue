@@ -93,7 +93,6 @@ export default {
     // })
   },
   // mounted () {
-
   //   this.$nextTick(() => {
   //     this._initScroll()
   //     this._calculateHeight()
