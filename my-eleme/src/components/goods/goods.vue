@@ -34,6 +34,10 @@
                   <!-- 这里只有降才显示，所以要加个v-show -->
                   <span v-show="food.oldPrice" class="old">￥{{food.oldPrice}}</span>
                 </div>
+                <!-- 加减商品数量，在哪个页面使用在哪添加div保证复用性 -->
+                <div class="cartcontrol-wrapper">
+                  <cartcontrol :food="food" @increment="incrementTotal"></cartcontrol>
+                </div>
               </div>
             </li>
           </ul>
@@ -41,13 +45,13 @@
       </ul>
     </div>
     <!-- 底部购物车 -->
-    <shopcart :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice"></shopcart>
+    <shopcart :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice" ref="shopcart"></shopcart>
   </div>
 </template>
 <script>
 import BScroll from 'better-scroll'
 import shopcart from '../shopcart/shopcart'
-// import data from '../../common/json/data.json';
+import cartcontrol from '../cartcontrol/cartcontrol.vue'
 const ERR_OK = 0
 export default {
   props: {
@@ -75,6 +79,18 @@ export default {
         }
       }
       return 0
+    },
+    //处理选中的商品
+    selectFoods () {
+      let foods = []
+      this.goods.forEach((good) => {
+        good.foods.forEach((food) => {
+          if(food.count){
+            foods.push(food)
+          }
+        })
+      })
+      return foods
     }
   },
   // 请求数据
@@ -152,15 +168,21 @@ export default {
       // 调用better-scroll方法
       // scrollToElement(el, time, offsetX, offsetY, easing)
       this.foodScroll.scrollToElement(el, 300)
-    }
+    },
+    // 单击加号接收子组件传递的事件
+    incrementTotal (target) {
+      this.$refs.shopcart.drop(target)
+    },
+
   },
   components: {
-    shopcart
+    shopcart,
+    cartcontrol
   }
 }
 </script>
 <style lang="stylus">
-@import "../../common/stylus/mixin.styl";
+@import "../../common/stylus/mixin.styl"
   .goods
     display flex
     position absolute
@@ -253,6 +275,10 @@ export default {
           .price
             font-weight 700
             line-height 24px
+          .cartcontrol-wrapper
+            position absolute
+            right 0
+            bottom 12px
             .now
               margin-right 8px
               font-size 14px
