@@ -40,10 +40,13 @@
         </li>
       </ul>
     </div>
+    <!-- 底部购物车 -->
+    <shopcart :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice"></shopcart>
   </div>
 </template>
 <script>
 import BScroll from 'better-scroll'
+import shopcart from '../shopcart/shopcart'
 // import data from '../../common/json/data.json';
 const ERR_OK = 0
 export default {
@@ -150,23 +153,9 @@ export default {
       // scrollToElement(el, time, offsetX, offsetY, easing)
       this.foodScroll.scrollToElement(el, 300)
     }
-    // 点击按钮加入购物车
-    // selectFoods() {
-    //     let foods = []
-    //     // good是一个数组对象，good参数相当于每个数组中每个对象元素，在good中又有foods数组对象，food相当于foods数组对象元素中每个对象元素
-    //     this.goods.forEach((good) => {
-    //       // console.log(good.foods);
-    //       // good.foods是good对象中的foods数组
-    //       good.foods.forEach((food) => {
-    //         // count来自于cartControl
-    //         if (food.count) {
-    //           foods.push(food)
-    //         }
-    //       });
-    //     });
-    //     console.log(foods)
-    //     return foods
-    //   }
+  },
+  components: {
+    shopcart
   }
 }
 </script>

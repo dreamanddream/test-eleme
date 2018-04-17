@@ -19,7 +19,7 @@
         </router-link>
       </div>
     </div>
-    <router-view/>
+    <router-view :seller="seller"/>
   </div>
 </template>
 <script type="text/ecmascript-6">
