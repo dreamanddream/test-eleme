@@ -45,7 +45,7 @@
       </ul>
     </div>
     <!-- 底部购物车 -->
-    <shopcart :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice" ref="shopcart"></shopcart>
+    <shopcart :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice" ref="shopcart" :select-foods="selectFoods"></shopcart>
   </div>
 </template>
 <script>
@@ -172,6 +172,7 @@ export default {
     // 单击加号接收子组件传递的事件
     incrementTotal (target) {
       this.$refs.shopcart.drop(target)
+      alert(this.$refs.shopcart.drop(target))
     },
 
   },
