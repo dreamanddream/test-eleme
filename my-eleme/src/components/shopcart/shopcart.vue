@@ -14,13 +14,13 @@
         <div class="price" :class="{'highlight': totalPrice > 0}">￥{{totalPrice}}</div>
           <div class="desc">另需配送费{{deliveryPrice}}元</div>
       </div>
-      <div class="content-right">
-        <p class="price">￥{{minPrice}}起送</p>
+      <div class="content-right" >
+        <p class="pay" :class="payClass">{{ payDesc }}</p>
       </div>
     </div>
     <!-- 运动小球 -->
     <div class="ball-container">
-      <div v-for="ball in balls">
+      <div v-for="(ball, index) in balls" :key="index">
         <!-- 点击执行对应得事件 -->
         <transition name="drop" @before-enter="beforeEnter" @enter="enter" @after-enter="afterEnter">
           <div v-show="ball.show" class="ball">
@@ -39,7 +39,7 @@
       </div>
       <div class="list-content" ref="listcontent">
         <ul>
-          <li class="shopcart-food" v-for="(food, index) in selectFoods">
+          <li class="shopcart-food" v-for="(food, index) in selectFoods" :key="index">
             <span class="name">{{food.name}}</span>
             <div class="price"><span>￥{{food.price * food.count}}</span></div>
             <!-- 这里也有一个数量加减控制 -->
@@ -51,7 +51,6 @@
       </div>
     </div>
     </transition>
-
   </div>
 </template>
 
@@ -70,10 +69,7 @@ export default {
     },
     'selectFoods': {
       type: Array,
-      // default () {
-      //   count: 0
-      // }
-      default() {
+      default () {
         return []
       }
     }
@@ -107,86 +103,107 @@ export default {
       })
       return count
     },
-  // 是否显示购物车列表详情
-  listShow () {
-    if (!this.totalCount) {
-      this.fold = true
-      return false
+    // 结算描述动态变化
+    payDesc () {
+      if (this.totalPrice === 0) {
+        console.log(this.minPrice)
+        return `￥${this.minPrice}元起送`
+      } else if (this.totalPrice < this.minPrice) {
+        // alert(this.totalPrice)
+        let diff = this.minPrice - this.totalPrice
+        return `还差￥${diff}元起送`
+      } else {
+        return '去结算'
+      }
+    },
+    // 动态切换class
+    payClass () {
+      if (this.totalPrice < this.minPrice) {
+        return 'not-enough'
+      } else {
+        return 'enough'
+      }
+    },
+    // 是否显示购物车列表详情
+    listShow () {
+      if (!this.totalCount) {
+        this.fold = true
+        return false
+      }
+      // 注意逻辑，要看最终返回的show的布尔值的真实性
+      let show = !this.fold
+      if (show) {
+        this.$nextTick(() => {
+          if (!this.scroll) {
+            this.scroll = new BScroll(this.$refs.listcontent, {
+              click: true
+            })
+          } else {
+            this.scroll.refresh()
+          }
+        })
+      }
+      return show
     }
-    // 注意逻辑，要看最终返回的show的布尔值的真实性
-    let show = !this.fold
-    if (show) {
-      this.$nextTick(() => {
-        if (!this.scroll) {
-          this.scroll = new BScroll(this.$refs.listcontent,{
-          click: true
-          })
-        } else {
-          this.scroll.refresh()
-        }
-      })
-    }
-    return show
-  }
   },
   methods: {
     toggleList (event) {
       // 这里还有个注意点，totalCount是在computed中定义的，所以在整个组件中都能用？？？
-      if(!this.totalCount){
+      if (!this.totalCount) {
         // 如果没有数量，直接return
         return
       }
       this.fold = !this.fold
     },
     // drop
-    drop(el) {
-        for (let i = 0; i < this.balls.length; i++) {
-          let ball = this.balls[i]
-          if (!ball.show) {
-            ball.show = true
-            ball.el = el
-            this.dropBalls.push(ball)
-            console.log("dropBalls")
-            console.log(this.dropBalls)
-            return
-          }
-        }
-      },
-      beforeEnter(el) {
-        let count = this.balls.length;
-        while (count--) {
-          let ball = this.balls[count];
-          if (ball.show) {
-            let rect = ball.el.getBoundingClientRect();
-            let x = rect.left - 32;
-            let y = -(window.innerHeight - rect.top - 22);
-            el.style.display = '';
-            el.style.webkitTransform = `translate3d(0,${y}px,0)`;
-            el.style.transform = `translate3d(0,${y}px,0)`;
-            let inner = el.getElementsByClassName('inner-hook')[0];
-            inner.style.webkitTransform = `translate3d(${x}px,0,0)`;
-            inner.style.transform = `translate3d(${x}px,0,0)`;
-          }
-        }
-      },
-      enter(el) {
-//          let rf = el.offestHeight;
-        this.$nextTick(() => {
-          el.style.webkitTransform = 'translate3d(0,0,0)';
-          el.style.transform = 'translate3d(0,0,0)';
-          let inner = el.getElementsByClassName('inner-hook')[0];
-          inner.style.webkitTransform = 'translate3d(0,0,0)';
-          inner.style.transform = 'translate3d(0,0,0)';
-        });
-      },
-      afterEnter(el) {
-        let ball = this.dropBalls.shift();
-        if (ball) {
-          ball.show = false;
-          el.style.display = 'none';
+    drop (el) {
+      for (let i = 0; i < this.balls.length; i++) {
+        let ball = this.balls[i]
+        if (!ball.show) {
+          ball.show = true
+          ball.el = el
+          this.dropBalls.push(ball)
+          console.log('dropBalls')
+          console.log(this.dropBalls)
+          return
         }
       }
+    },
+    beforeEnter (el) {
+      let count = this.balls.length
+      while (count--) {
+        let ball = this.balls[count]
+        if (ball.show) {
+          let rect = ball.el.getBoundingClientRect()
+          let x = rect.left - 32
+          let y = -(window.innerHeight - rect.top - 22)
+          el.style.display = ''
+          el.style.webkitTransform = `translate3d(0,${y}px,0)`
+          el.style.transform = `translate3d(0,${y}px,0)`
+          let inner = el.getElementsByClassName('inner-hook')[0]
+          inner.style.webkitTransform = `translate3d(${x}px,0,0)`
+          inner.style.transform = `translate3d(${x}px,0,0)`
+        }
+      }
+    },
+    enter (el) {
+    // let rf = el.offestHeight;
+      this.$nextTick(() => {
+        el.style.webkitTransform = 'translate3d(0,0,0)'
+        el.style.transform = 'translate3d(0,0,0)'
+        let inner = el.getElementsByClassName('inner-hook')[0]
+        inner.style.webkitTransform = 'translate3d(0,0,0)'
+        inner.style.transform = 'translate3d(0,0,0)'
+      })
+    },
+    afterEnter (el) {
+      let ball = this.dropBalls.shift()
+      if (ball) {
+        ball.show = false
+        el.style.display = 'none'
+      }
     }
+  }
 }
 </script>
 <style lang='stylus'>
@@ -269,15 +286,21 @@ export default {
       .content-right
         width 105px
         box-sizing border-box
-        padding 0 8px
         text-align center
         background #2b343c
-        .price
-          font-size 12px
-          color rgba(255, 255, 255, 0.4)
+        .pay
           height 48px
           line-height 48px
+          text-align center
+          font-size 12px
+          color rgba(255, 255, 255, 0.4);
           font-weight 700
+          background #2b333b
+          &.not-enough
+            background #2b333b
+          &.enough
+            background #00b43c
+            color #ffffff
     .ball-container
       .ball
         position fixed
@@ -332,10 +355,10 @@ export default {
         overflow hidden
         background #ffffff
         .shopcart-food
-        position relative
-        padding 12px 0
-        box-sizing border-box
-        border-1px(rgba(7, 17, 27, 0.1))
+          position relative
+          padding 12px 0
+          box-sizing border-box
+          border-1px(rgba(7, 17, 27, 0.1))
         .name
           line-height 24px
           font-size 14px

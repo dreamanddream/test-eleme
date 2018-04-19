@@ -25,8 +25,8 @@ export default {
     addCart (event) {
       // event._constructed????
       if (!event._constructed) {
-          // 去掉自带click事件的点击
-          return;
+        // 去掉自带click事件的点击
+        return
       }
       if (!this.food.count) {
         Vue.set(this.food, 'count', 1)
@@ -40,9 +40,9 @@ export default {
     },
     decreaseCart (event) {
       if (!event._constructed) {
-          // 去掉自带click事件的点击
-          return;
-        }
+        // 去掉自带click事件的点击
+        return
+      }
       this.food.count--
     }
   }
@@ -84,4 +84,3 @@ export default {
         line-height 24px
         text-align center
 </style>
-

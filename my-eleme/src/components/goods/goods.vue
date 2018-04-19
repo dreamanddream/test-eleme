@@ -80,12 +80,12 @@ export default {
       }
       return 0
     },
-    //处理选中的商品
+    // 处理选中的商品
     selectFoods () {
       let foods = []
       this.goods.forEach((good) => {
         good.foods.forEach((food) => {
-          if(food.count){
+          if (food.count) {
             foods.push(food)
           }
         })
@@ -173,8 +173,7 @@ export default {
     incrementTotal (target) {
       this.$refs.shopcart.drop(target)
       alert(this.$refs.shopcart.drop(target))
-    },
-
+    }
   },
   components: {
     shopcart,
