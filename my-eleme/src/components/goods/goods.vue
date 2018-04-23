@@ -15,10 +15,10 @@
     <!-- 右侧食品 -->
     <div class="foods-wrapper" ref="foodWrapper">
       <ul>
-        <li v-for="(item, index) in goods" class="food-list food-list-hook" :key="index">
+        <li v-for="(item, index) in goods" class="food-list food-list-hook" :key="index" >
           <h1 class="title">{{item.name}}</h1>
           <ul>
-            <li v-for="(food, index) in item.foods" :key="index" class="food-item">
+            <li v-for="(food, index) in item.foods" :key="index" class="food-item" @click="selectFood(food, $event)">
               <div class="icon">
                 <img :src="food.icon" alt="" width="57px" height="57px">
               </div>
@@ -46,12 +46,15 @@
     </div>
     <!-- 底部购物车 -->
     <shopcart :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice" ref="shopcart" :select-foods="selectFoods"></shopcart>
+    <!-- 食物详情页 -->
+    <food ref="food" :food="selectedFood"></food>
   </div>
 </template>
 <script>
 import BScroll from 'better-scroll'
 import shopcart from '../shopcart/shopcart'
 import cartcontrol from '../cartcontrol/cartcontrol.vue'
+import food from '../food/food.vue'
 const ERR_OK = 0
 export default {
   props: {
@@ -64,7 +67,8 @@ export default {
     return {
       goods: [],
       listHeight: [],
-      scrolly: 0
+      scrolly: 0,
+      selectedFood: {}
     }
   },
   // 计算属性
@@ -172,12 +176,22 @@ export default {
     // 单击加号接收子组件传递的事件
     incrementTotal (target) {
       this.$refs.shopcart.drop(target)
-      alert(this.$refs.shopcart.drop(target))
+      // alert(this.$refs.shopcart.drop(target))
+    },
+    // 选中某个商品
+    selectFood (food, event) {
+      // alert(1)
+      if (!event._constructed) {
+        return
+      }
+      this.selectedFood = food
+      this.$refs.food.show()
     }
   },
   components: {
     shopcart,
-    cartcontrol
+    cartcontrol,
+    food
   }
 }
 </script>
