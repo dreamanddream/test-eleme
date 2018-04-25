@@ -44,6 +44,15 @@
                 {{rating.deliveryTime}}分钟送达
               </span>
             </div>
+            <p class="text">{{rating.text}}</p>
+            <!-- 加个判断，有小标签时才显示 -->
+            <div class="recommend" v-show="rating.recommend &&rating.recommend.length">
+              <i class="icon-thumb_up"></i>
+              <span  class="item" v-for="item in rating.recommend" >{{item}}</span>
+            </div>
+            <div class="time">
+              {{rating.rateTime | formatDate}}
+            </div>
           </div>
         </li>
       </ul>
@@ -56,6 +65,7 @@ import star from '../star/star.vue'
 import split from '../split/split.vue'
 import ratingselect from '../ratingselect/ratingselect.vue'
 import BScroll from 'better-scroll'
+import {formatDate} from '../../common/js/date'
 const ALL = 2
 const ERR_OK = 0
 export default {
@@ -87,6 +97,12 @@ export default {
         })
       }
     })
+  },
+  filters: {
+    formatDate (time) {
+      let date = new Date(time)
+      return formatDate (date, 'yyyy-MM-dd hh:mm')
+    }
   },
   components: {
     star,
@@ -213,11 +229,11 @@ export default {
         .recommend
           line-height 16px
           font-size 0
-          .iconfont, .item
+          .icon-thumb_up, .item
             display inline-block
             margin 0 8px 4px 0
             font-size 9px
-          .iconfont
+          .icon-thumb_up
             color rgb(0, 160, 220)
           .item
             padding 0 6px
