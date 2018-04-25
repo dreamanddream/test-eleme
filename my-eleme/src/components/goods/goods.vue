@@ -142,19 +142,19 @@ export default {
     // 计算高度  获取每个li距离顶部得高度
     _calculateHeight () {
       let foodList = this.$refs.foodWrapper.getElementsByClassName('food-list-hook')
-      console.log(foodList.length)
+      // console.lconsole.lconsole.log(foodList.length)
       let height = 0
       this.listHeight.push(height)
-      console.log(foodList.length)
+      // console.log(foodList.length)
       for (let i = 0; i < foodList.length; i++) {
         let item = foodList[i]
         // console.log(item)
         // 原生js获取clientHeight
         height += item.clientHeight
-        console.log(item.clientHeight)
+        // console.log(item.clientHeight)
         this.listHeight.push(height)
         // console.log("px")
-        console.log(this.listHeight)
+        // console.log(this.listHeight)
       }
     },
     //  点击左侧菜单标题

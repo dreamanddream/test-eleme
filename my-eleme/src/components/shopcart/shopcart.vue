@@ -37,7 +37,7 @@
         <h1 class="title">购物车</h1>
         <span class="empty">清空</span>
       </div>
-      <div class="list-content" ref="listcontent">
+      <div class="list-content" ref="listContent">
         <ul>
           <li class="shopcart-food" v-for="(food, index) in selectFoods" :key="index">
             <span class="name">{{food.name}}</span>
@@ -106,7 +106,7 @@ export default {
     // 结算描述动态变化
     payDesc () {
       if (this.totalPrice === 0) {
-        console.log(this.minPrice)
+        // console.logconsole.log(this.minPrice)
         return `￥${this.minPrice}元起送`
       } else if (this.totalPrice < this.minPrice) {
         // alert(this.totalPrice)
@@ -125,17 +125,37 @@ export default {
       }
     },
     // 是否显示购物车列表详情
+    // listShow () {
+    //   if (!this.totalCount) {
+    //     this.fold = true
+    //     return false
+    //   }
+    //   // 注意逻辑，要看最终返回的show的布尔值的真实性
+    //   let show = !this.fold
+    //   if (show) {
+    //     this.$nextTick(() => {
+    //       if (!this.scroll) {
+    //         this.scroll = new BScroll(this.$refs.listcontent, {
+    //           click: true
+    //         })
+    //       } else {
+    //         this.scroll.refresh()
+    //       }
+    //     })
+    //   }
+    //   return show
+    // }
     listShow () {
       if (!this.totalCount) {
         this.fold = true
         return false
       }
-      // 注意逻辑，要看最终返回的show的布尔值的真实性
       let show = !this.fold
       if (show) {
         this.$nextTick(() => {
+          // 选中的商品列表内容滚动
           if (!this.scroll) {
-            this.scroll = new BScroll(this.$refs.listcontent, {
+            this.scroll = new BScroll(this.$refs.listContent, {
               click: true
             })
           } else {
@@ -163,8 +183,8 @@ export default {
           ball.show = true
           ball.el = el
           this.dropBalls.push(ball)
-          console.log('dropBalls')
-          console.log(this.dropBalls)
+          // console.log('dropBalls')
+          // console.log(this.dropBalls)
           return
         }
       }

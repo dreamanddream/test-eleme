@@ -25,68 +25,64 @@
 const POSITIVE = 0
 const NEGATIVE = 1
 const ALL = 2
-  export default {
-    props: {
-      ratings: {
-        type: Array,
-        default () {
-          return []
-        }
-      },
-      selectType: {
-        type: Number,
-        default: ALL
-      },
-      // 用于筛选，是否显示有评价的内容
-      onlyContent: {
-        type: Boolean,
-        default: false
-      },
-      // 多扩展性
-      desc: {
-        type: Object,
-        default () {
-          return {
-            all: '全部',
-            positive: '满意',
-            negative: '不满意'
-          }
-        }
+export default {
+  props: {
+    ratings: {
+      type: Array,
+      default () {
+        return []
       }
     },
-    computed: {
-      positives () {
-        return this.ratings.filter((rating => {
-          return rating.rateType === POSITIVE
-        }))
-      },
-      negatives () {
-        return this.ratings.filter((rating) => {
-          return rating.rateType === NEGATIVE
-        })
-      }
-
+    selectType: {
+      type: Number,
+      default: ALL
     },
-    methods: {
-      select (type, event) {
-        if(!event._constructed){
-          return
+    onlyContent: {
+      type: Boolean,
+      default: false
+    },
+    desc: {
+      type: Object,
+      default () {
+        return {
+          all: '全部',
+          positive: '满意',
+          negative: '不满意'
         }
-        this.selectType = type
-        // 将事件通知到increment同时将selecttype和type传递过去
-        this.$emit('increment','selectType',type)
-      },
-      // 是否显示全部内容的切换
-      toggleContent () {
-        if (!event._constructed) {
-          return
-        }
-        this.onlyContent = !this.onlyContent
-        // 通知父组件，将onlyContent和onlyContent传递给父组件
-        this.$emit('increment', 'onlyContent', this.onlyContent)
       }
     }
+  },
+  computed: {
+    positives () {
+      return this.ratings.filter((rating) => {
+        return rating.rateType === POSITIVE
+      })
+    },
+    negatives () {
+      return this.ratings.filter((rating) => {
+        return rating.rateType === NEGATIVE
+      })
+    }
+
+  },
+  methods: {
+    select (type, event) {
+      if (!event._constructed) {
+        return
+      }
+      // this.selectType = type
+      this.$emit('sele', type)
+    },
+    // 是否显示全部内容的切换
+    toggleContent () {
+      if (!event._constructed) {
+        return
+      }
+      // this.onlyContent = !this.onlyContent
+      this.$emit('onlyCon', this.onlyContent)
+    }
   }
+}
 </script>
 <style lang="stylus">
 @import "../../common/stylus/mixin.styl"
@@ -135,4 +131,3 @@ const ALL = 2
     .text
       font-size 12px
 </style>
-

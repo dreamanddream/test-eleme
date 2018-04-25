@@ -1,6 +1,6 @@
 <template>
   <transition name="fade">
-    <div v-show="showFlag" class="food">
+    <div v-show="showFlag" class="food" ref="food">
       <div class="food-content">
         <!-- 图片的加载属于异步过程 -->
         <div class="image-header">
@@ -43,16 +43,15 @@
         <!-- 评论信息 -->
         <div class="rating">
           <h1 class="title">商品评价</h1>
-          <ratingselect :ratings="food.ratings" :select-type="selectType" :desc="desc" :only-content="onlyContent" @increment="incrementTotal"></ratingselect>
+          <ratingselect :ratings="food.ratings" :select-type="selectType" :desc="desc" :only-content="onlyContent" @sele="selectTotal" @onlyCon="only"></ratingselect>
           <div class="rating-wrapper">
-            <!-- 首先处理是否显示 -->
             <ul v-show="food.ratings && food.ratings.length">
-              <li v-for="rating in food.ratings" class="rating-item" v-show="needShow(rating.rateType, rating.text)">
+              <li v-for="(rating, index) in food.ratings" class="rating-item" v-show="needShow(rating.rateType, rating.text)" :key="index">
                 <div class="user">
                   <span class="name">{{rating.username}}</span>
                   <img :src="rating.avatar" alt="" class="avatar" width="12" height="12">
                 </div>
-                <div class="time">{{rating.rateTime}}</div>
+                <div class="time">{{rating.rateTime | formatDate}}</div>
                 <p class="text">
                   <i :class="{'icon-thumb_up':rating.rateType===0,'icon-thumb_down':rating.rateType===1}"></i>
                   {{rating.text}}
@@ -68,104 +67,119 @@
 </template>
 <script>
 // 使用滚动插件
-  import BScroll from 'better-scroll'
-  import cartControl from '../cartcontrol/cartcontrol.vue'
-  import Vue from 'vue'
-  import shopcart from '../shopcart/shopcart.vue'
-  import split from '../split/split.vue'
-  import ratingselect from '../ratingselect/ratingselect.vue'
-  import {formatDate} from '../../common/js/date'
-  const ALL = 2
-  export default {
-    props: {
-      food: {
-        type: Object
-      }
-    },
-    data () {
-      return {
-        showFlag: false,
-        selectType: ALL,
-        onlyContent : true,
-        desc: {
-          all : '全部',
-          positive : '推荐',
-          negative : '吐槽'
-        }
-      }
-    },
-    methods: {
-      show () {
-        this.showFlag = true
-        this.selectType = ALL
-        this.onlyContent = true
-        this.$nextTick(() => {
-          if (!this.scroll) {
-            // 将$el传入，可点击将click设置为true
-            console.log("el")
-            console.log(this.$el)
-            this.scroll = new BScroll(this.$el, {
-              click: true
-            })
-          } else {
-            console.log("el")
-            console.log(this.$el)
-            this.scroll.refresh()
-          }
-        })
-      },
-      hide () {
-        this.showFlag = false
-      },
-      addFirst (event) {
-        if (!event._constructed) {
-          return
-        }
-        // alert(1)
-        // console.log(this.food.count)
-        Vue.set(this.food, 'count', 1)
-        // this.$emit('increment', event.target)
-      },
-      // 很巧妙的方法,处理过滤
-      needShow(type, text) {
-        // 分为三种情况，1.只显示有内容2.显示推荐的3.显示好评的   最终是返回true或者false结合v-show对li排查进行显示或者不显示
-        // 挑选出没有内容的，设置返回值为false，然后就不显示了
-        if (this.onlyContent && !text) {
-          return false;
-        }
-        if (this.selectType === ALL) {
-          return true;
-        } else {
-          // console.log(type === this.selectType);
-          // 通过这个实现过滤，当点击时传递过来的selectType和遍历的类型type一致时就显示
-          return type === this.selectType;
-        }
-      },
-      incrementTotal (type, data) {
-        this[type] = data
-        // console.log("this[type]")
-        // console.log(this[type])
-        // console.log(data)
-        // 重新加载dom
-        this.$nextTick(() => {
-          this.scroll.refresh()
-        })
-      },
-      // 处理时间
-      filters: {
-        formatDate(time) {
-          let date = new Date(time);
-          console.log(date);
-          return formatDate(date, 'yyyy-MM-dd hh:mm');
-        }
-      }
-    },
-    components: {
-      cartControl,
-      split,
-      ratingselect
+import BScroll from 'better-scroll'
+import cartControl from '../cartcontrol/cartcontrol.vue'
+import Vue from 'vue'
+import split from '../split/split.vue'
+import ratingselect from '../ratingselect/ratingselect.vue'
+import {formatDate} from '../../common/js/date'
+const ALL = 2
+export default {
+  props: {
+    food: {
+      type: Object
     }
+  },
+  data () {
+    return {
+      showFlag: false,
+      selectType: ALL,
+      onlyContent: true,
+      desc: {
+        all: '全部',
+        positive: '推荐',
+        negative: '吐槽'
+      }
+    }
+  },
+  methods: {
+    show () {
+      this.showFlag = true
+      this.selectType = ALL
+      this.onlyContent = true
+      this.$nextTick(() => {
+        if (!this.scroll) {
+          // 将$el传入，可点击将click设置为true
+          // console.log("el")
+          // console.log(this.$el)
+          this.scroll = new BScroll(this.$refs.food, {
+            click: true
+          })
+        } else {
+          // console.log("el")
+          // console.log(this.$el)
+          this.scroll.refresh()
+        }
+      })
+    },
+    hide () {
+      this.showFlag = false
+    },
+    addFirst (event) {
+      if (!event._constructed) {
+        return
+      }
+      // alert(1)
+      // console.log(this.food.count)
+      Vue.set(this.food, 'count', 1)
+      // this.$emit('increment', event.target)
+    },
+    // 很巧妙的方法,处理过滤
+    needShow (type, text) {
+      // 分为三种情况，1.只显示有内容2.显示推荐的3.显示好评的   最终是返回true或者false结合v-show对li排查进行显示或者不显示
+      // 挑选出没有内容的，设置返回值为false，然后就不显示了
+      if (this.onlyContent && !text) {
+        return false
+      }
+      if (this.selectType === ALL) {
+        return true
+      } else {
+        // console.log(type === this.selectType);
+        // 通过这个实现过滤，当点击时传递过来的selectType和遍历的类型type一致时就显示
+        return type === this.selectType
+      }
+    },
+    // incrementTotal (type, data) {
+    //   this[type] = !data
+    //   // console.log("this[type]")
+    //   // console.log(this[type])
+    //   // console.log(data)
+    //   // 重新加载dom
+    //   this.$nextTick(() => {
+    //     this.scroll.refresh()
+    //   })
+    // },
+    selectTotal (type) {
+      this.selectType = type
+      // console.log("this[type]")
+      // console.log(this[type])
+      // console.log(data)
+      // 重新加载dom
+      this.$nextTick(() => {
+        this.scroll.refresh()
+      })
+    },
+    only (onlyContent) {
+      this.onlyContent = !onlyContent
+      this.$nextTick(() => {
+        this.scroll.refresh()
+      })
+    }
+  },
+  // 使用过滤器选项，处理时间
+  filters: {
+    formatDate (time) {
+      let date = new Date(time)
+      console.log(date)
+      return formatDate(date, 'yyyy-MM-dd hh:mm')
+    }
+  },
+  components: {
+    cartControl,
+    split,
+    ratingselect
   }
+}
 </script>
 <style lang="stylus">
 @import "../../common/stylus/mixin.styl";
@@ -318,4 +332,3 @@
           font-size 12px
           color rgb(147, 153, 159)
 </style>
-
