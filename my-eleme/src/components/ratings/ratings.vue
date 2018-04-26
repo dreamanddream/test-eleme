@@ -27,11 +27,11 @@
         </div>
       </div>
       <split></split>
-    <ratingselect :ratings="ratings" :select-type="selectType" :only-content="onlyContent"></ratingselect>
+    <ratingselect :ratings="ratings" :select-type="selectType" :only-content="onlyContent"  @sele="selectTotal" @onlyCon="only"></ratingselect>
   <!-- 具体的评论内容 -->
     <div class="rating-wrapper">
       <ul>
-        <li v-for="(rating, index) in ratings" :key="index" class="rating-item">
+        <li v-for="(rating, index) in ratings" :key="index" class="rating-item" v-show="needShow(rating.rateType, rating.text)">
           <div class="avatar">
             <img :src="rating.avatar" alt="" width="28" height="28">
           </div>
@@ -90,13 +90,43 @@ export default {
       if (res.errno === ERR_OK) {
         this.ratings = res.data
         this.$nextTick(() => {
-          // console.log(this.ratings)
+          console.log(this.ratings)
           this.scroll = new BScroll(this.$refs.ratings,
             {click: true}
           )
         })
       }
     })
+  },
+  methods: {
+    // 很巧妙的方法,处理过滤
+    needShow (type, text) {
+      if (this.onlyContent && !text) {
+        return false
+      }
+      if (this.selectType === ALL) {
+        return true
+      } else {
+        return type === this.selectType
+      }
+    },
+    // 只显示有内容的评价
+    selectTotal (type) {
+      this.selectType = type
+      // console.log("this[type]")
+      // console.log(this[type])
+      // console.log(data)
+      // 重新加载dom
+      this.$nextTick(() => {
+        this.scroll.refresh()
+      })
+    },
+    only (onlyContent) {
+      this.onlyContent = !onlyContent
+      this.$nextTick(() => {
+        this.scroll.refresh()
+      })
+    }
   },
   filters: {
     formatDate (time) {
